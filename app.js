@@ -12,7 +12,8 @@ const state = {
         prompt: ''
     },
     games: [],
-    currentView: 'signup'
+    currentView: 'signup',
+    gameBeingCreated: null
 };
 
 const colorOptions = {
@@ -51,6 +52,23 @@ function buildPixelAvatar() {
             <div class="pixel-leg right" style="background:${pants};"></div>
         </div>
     `;
+}
+
+function generateGameConcept(prompt) {
+    const concepts = [
+        'A pixel cave explorer dodging falling crystals and collecting gems.',
+        'A retro platformer where you jump between floating islands.',
+        'A rhythm game where you match beats with on-screen tiles.',
+        'A puzzle game where you slide blocks to match colors.',
+        'A maze runner escaping a dark dungeon.',
+        'A simple fishing game catching colorful pixel fish.',
+        'A space shooter defending your base from asteroids.',
+        'A tower defense game placing towers to block enemies.',
+        'A match-three puzzle game with power-ups.',
+        'A parkour game racing against time on a pixel landscape.'
+    ];
+
+    return concepts[Math.floor(Math.random() * concepts.length)];
 }
 
 function renderSignupScreen() {
@@ -137,11 +155,11 @@ function renderHomeScreen() {
                         ${state.games.length ? '' : '<div class="empty-games">No games yet<br>Start creating your first world.</div>'}
                         ${state.games.length ? `
                             <div class="game-grid wide-grid">
-                                ${state.games.map(game => `
-                                    <div class="game-card">
+                                ${state.games.map((game, idx) => `
+                                    <div class="game-card" id="play-game-${idx}">
                                         <div class="game-card-inner">
                                             <strong>${game.name}</strong>
-                                            <span>${game.description}</span>
+                                            <span class="game-desc">${game.description}</span>
                                         </div>
                                     </div>
                                 `).join('')}
@@ -181,6 +199,13 @@ function renderHomeScreen() {
         state.games = [];
         state.avatar = { skin: '#f4c7a1', shirt: '#53c8ff', pants: '#7ef29a', hat: 'none', aiGenerated: false, prompt: '' };
         renderSignupScreen();
+    });
+
+    state.games.forEach((game, idx) => {
+        const gameCard = document.getElementById(`play-game-${idx}`);
+        if (gameCard) {
+            gameCard.addEventListener('click', () => renderGameScreen(idx));
+        }
     });
 }
 
@@ -334,9 +359,19 @@ function renderProfileScreen() {
                     </div>
                 </div>
 
+                <h3>Your Games</h3>
+                <div class="profile-games-list">
+                    ${state.games.length ? state.games.map((game, idx) => `
+                        <div class="profile-game-item" id="profile-play-game-${idx}">
+                            <strong>${game.name}</strong>
+                            <span>${game.description}</span>
+                        </div>
+                    `).join('') : '<div class="empty-state">No games published yet</div>'}
+                </div>
+
                 <div class="profile-actions">
                     <button class="secondary-btn" id="go-avatar">Edit Avatar</button>
-                    <button class="secondary-btn" id="go-games">View Games</button>
+                    <button class="secondary-btn" id="go-create">Create New Game</button>
                     <button class="secondary-btn danger" id="reset-account-profile">Reset Account</button>
                 </div>
             </section>
@@ -345,7 +380,7 @@ function renderProfileScreen() {
 
     document.getElementById('back-to-home').addEventListener('click', renderHomeScreen);
     document.getElementById('go-avatar').addEventListener('click', renderAvatarStudio);
-    document.getElementById('go-games').addEventListener('click', renderHomeScreen);
+    document.getElementById('go-create').addEventListener('click', renderCreateGameScreen);
     document.getElementById('reset-account-profile').addEventListener('click', () => {
         localStorage.removeItem('pixelhub_user');
         state.signedIn = false;
@@ -353,6 +388,13 @@ function renderProfileScreen() {
         state.games = [];
         state.avatar = { skin: '#f4c7a1', shirt: '#53c8ff', pants: '#7ef29a', hat: 'none', aiGenerated: false, prompt: '' };
         renderSignupScreen();
+    });
+
+    state.games.forEach((game, idx) => {
+        const gameItem = document.getElementById(`profile-play-game-${idx}`);
+        if (gameItem) {
+            gameItem.addEventListener('click', () => renderGameScreen(idx));
+        }
     });
 }
 
@@ -374,12 +416,11 @@ function renderCreateGameScreen() {
                 </div>
 
                 <div class="button-row">
-                    <button class="primary-btn" id="generate-game">Generate Game</button>
-                    <button class="secondary-btn" id="publish-game">Publish</button>
+                    <button class="primary-btn" id="generate-game">Generate with AI</button>
                 </div>
 
                 <div class="game-preview-box" id="game-preview-box">
-                    <div class="preview-placeholder">AI will generate a 2D game idea here.</div>
+                    <div class="preview-placeholder">Describe a game and click "Generate with AI" to see what we create.</div>
                 </div>
             </section>
         </div>
@@ -394,28 +435,102 @@ function renderCreateGameScreen() {
             return;
         }
 
+        const gameName = document.getElementById('game-name').value.trim();
+        const gameDescription = document.getElementById('game-description').value.trim();
+
+        if (!gameName || !gameDescription) {
+            alert('Please give your game a name and description.');
+            return;
+        }
+
+        const concept = generateGameConcept(prompt);
+
+        state.gameBeingCreated = {
+            name: gameName,
+            description: gameDescription,
+            prompt: prompt,
+            concept: concept
+        };
+
         const preview = document.getElementById('game-preview-box');
         preview.innerHTML = `
             <div class="generated-game-preview">
                 <div class="mini-scene"></div>
-                <div class="mini-scene-label">AI concept: ${prompt}</div>
+                <div class="mini-scene-label">${concept}</div>
+                <button class="primary-btn publish-btn" id="publish-this-game">Publish Game</button>
+                <button class="secondary-btn" id="regenerate-game">Try Another Concept</button>
             </div>
         `;
+
+        document.getElementById('publish-this-game').addEventListener('click', () => {
+            if (state.gameBeingCreated) {
+                state.games.push({
+                    name: state.gameBeingCreated.name,
+                    description: state.gameBeingCreated.description,
+                    concept: state.gameBeingCreated.concept
+                });
+                saveUser();
+                renderHomeScreen();
+            }
+        });
+
+        document.getElementById('regenerate-game').addEventListener('click', () => {
+            renderCreateGameScreen();
+        });
     });
+}
 
-    document.getElementById('publish-game').addEventListener('click', () => {
-        const name = document.getElementById('game-name').value.trim() || 'Untitled Game';
-        const description = document.getElementById('game-description').value.trim() || 'A new PixelHub game';
+function renderGameScreen(gameIndex) {
+    const game = state.games[gameIndex];
 
-        const newGame = {
-            name,
-            description
-        };
-
-        state.games.push(newGame);
-        saveUser();
+    if (!game) {
         renderHomeScreen();
-    });
+        return;
+    }
+
+    app.innerHTML = `
+        <div class="pixel-shell game-screen">
+            <header class="game-header">
+                <button class="back-btn" id="back-to-home">← Back to Home</button>
+                <h2>${game.name}</h2>
+            </header>
+
+            <div class="game-container">
+                <div class="game-viewport">
+                    <div class="game-scene">
+                        <div class="player-character">
+                            ${buildPixelAvatar()}
+                            <div class="player-label">You</div>
+                        </div>
+
+                        <div class="game-environment">
+                            <div class="env-element ground"></div>
+                            <div class="env-element obstacle"></div>
+                            <div class="env-element obstacle"></div>
+                            <div class="env-element collectible"></div>
+                            <div class="env-element collectible"></div>
+                        </div>
+                    </div>
+                    <div class="game-hud">
+                        <div class="hud-item">Score: 0</div>
+                        <div class="hud-item">Lives: 3</div>
+                    </div>
+                </div>
+
+                <div class="game-info">
+                    <h3>${game.name}</h3>
+                    <p>${game.description}</p>
+                    <p class="concept"><strong>Gameplay:</strong> ${game.concept}</p>
+                    <div class="game-controls">
+                        <button class="secondary-btn" id="close-game">Exit Game</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('back-to-home').addEventListener('click', renderHomeScreen);
+    document.getElementById('close-game').addEventListener('click', renderHomeScreen);
 }
 
 function restoreSession() {
