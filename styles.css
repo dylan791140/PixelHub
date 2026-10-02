@@ -1,0 +1,360 @@
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-dark: #111827;
+    --panel-dark: #1f2937;
+    --panel-mid: #2b3442;
+    --panel-light: #3b4658;
+    --pixel-blue: #53c8ff;
+    --pixel-pink: #ff6ec7;
+    --pixel-gold: #ffd166;
+    --pixel-green: #7ef29a;
+    --pixel-red: #ff6b6b;
+    --text: #edf6ff;
+    --muted: #9db2c7;
+    --shadow: #0b1220;
+    --pixel-border: #0d1728;
+}
+
+html, body {
+    margin: 0;
+    min-height: 100%;
+    font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    background:
+        linear-gradient(180deg, rgba(13, 23, 40, 0.96), rgba(17, 24, 39, 0.96)),
+        repeating-linear-gradient(
+            0deg,
+            rgba(255,255,255,0.03),
+            rgba(255,255,255,0.03) 2px,
+            transparent 2px,
+            transparent 4px
+        );
+    color: var(--text);
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+#app {
+    width: min(100%, 1200px);
+}
+
+.pixel-shell {
+    position: relative;
+    background: var(--panel-dark);
+    border: 4px solid var(--pixel-border);
+    box-shadow: 0 0 0 4px rgba(0,0,0,0.25), 0 18px 0 rgba(0,0,0,0.2);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.signup-screen {
+    width: min(100%, 960px);
+    margin: 0 auto;
+    padding: 28px 18px 22px;
+    background:
+        linear-gradient(135deg, rgba(83,200,255,0.09), rgba(255,110,199,0.08)),
+        var(--panel-dark);
+}
+
+.pixel-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    font-weight: 900;
+    font-size: clamp(2.1rem, 4vw, 4rem);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 18px;
+    text-shadow: 4px 4px 0 rgba(0,0,0,0.35);
+}
+
+.pixel-logo-mark {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--pixel-blue), var(--pixel-pink));
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.08), inset 0 0 0 4px rgba(0,0,0,0.2);
+    position: relative;
+}
+
+.pixel-logo-mark::before {
+    content: "P";
+    font-size: 2rem;
+    font-weight: 900;
+    color: white;
+}
+
+.signup-card {
+    width: min(100%, 520px);
+    margin: 0 auto;
+    background: rgba(20, 30, 44, 0.9);
+    border: 4px solid var(--pixel-border);
+    border-radius: 18px;
+    padding: 26px 22px 20px;
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.04);
+}
+
+.signup-header {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.signup-header h1 {
+    margin: 0;
+    font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+    letter-spacing: 1px;
+}
+
+.signup-header p {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.form-group input {
+    width: 100%;
+    border: 3px solid var(--pixel-border);
+    background: #0d1728;
+    color: var(--text);
+    border-radius: 12px;
+    padding: 14px 14px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus {
+    border-color: var(--pixel-blue);
+    box-shadow: 0 0 0 4px rgba(83,200,255,0.16);
+}
+
+.primary-btn,
+.secondary-btn,
+.small-btn {
+    cursor: pointer;
+    border: 3px solid var(--pixel-border);
+    border-radius: 12px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    transition: transform 0.15s ease, filter 0.2s ease;
+}
+
+.primary-btn:hover,
+.secondary-btn:hover,
+.small-btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.04);
+}
+
+.primary-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--pixel-blue), var(--pixel-pink));
+    color: #0b1220;
+    padding: 15px 18px;
+    font-size: 1rem;
+}
+
+.secondary-btn {
+    background: linear-gradient(135deg, var(--pixel-green), #51d2d6);
+    color: #08151e;
+    padding: 12px 14px;
+}
+
+.small-btn {
+    background: #2b3a4e;
+    color: var(--text);
+    padding: 8px 12px;
+    font-size: 0.8rem;
+}
+
+.form-help {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--muted);
+}
+
+.home-screen {
+    display: flex;
+    flex-direction: column;
+    min-height: 760px;
+    background: linear-gradient(180deg, rgba(22, 32, 48, 0.95), rgba(17, 24, 39, 1));
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    background: rgba(17, 24, 39, 0.75);
+    border-bottom: 4px solid var(--pixel-border);
+}
+
+.topbar-left,
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar-badge,
+.profile-badge {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--pixel-blue), var(--pixel-pink));
+    border: 3px solid var(--pixel-border);
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.12);
+    font-size: 1.3rem;
+}
+
+.brand-mini {
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.user-pill {
+    background: rgba(83,200,255,0.12);
+    border: 3px solid var(--pixel-border);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.content-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr 280px;
+    gap: 18px;
+    padding: 18px;
+    flex: 1;
+}
+
+.panel {
+    background: rgba(31, 41, 55, 0.9);
+    border: 4px solid var(--pixel-border);
+    border-radius: 14px;
+    padding: 18px 16px;
+}
+
+.side-panel h2,
+.main-panel h2,
+.right-panel h2 {
+    margin: 0 0 14px;
+    font-size: 1.1rem;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.nav-list,
+.quick-stats,
+.game-list,
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nav-item,
+.stat-item,
+.game-card,
+.action-item {
+    background: rgba(255,255,255,0.03);
+    border: 3px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 10px 12px;
+    color: var(--text);
+}
+
+.main-panel {
+    min-height: 520px;
+}
+
+.game-spotlight {
+    background: linear-gradient(180deg, rgba(83,200,255,0.1), rgba(255,110,199,0.08));
+    border: 3px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 18px;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--muted);
+}
+
+.empty-games {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.game-card {
+    min-height: 110px;
+    display: flex;
+    align-items: end;
+    justify-content: flex-start;
+    background: linear-gradient(135deg, rgba(126, 242, 154, 0.18), rgba(83,200,255,0.14));
+}
+
+.right-panel .profile-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.profile-box .profile-badge {
+    width: 64px;
+    height: 64px;
+}
+
+.empty-state {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 960px) {
+    .content-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .home-screen {
+        min-height: auto;
+    }
+}
